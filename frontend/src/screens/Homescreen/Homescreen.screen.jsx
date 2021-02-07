@@ -1,41 +1,45 @@
-import React, {useState, useEffect} from 'react'
+import React, {useEffect} from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import { Row, Col } from 'react-bootstrap';
-
-//import products from '../../products';
+import { listProducts } from '../../actions/productActions';
 import Product from '../../components/Product.component';
-import axios from 'axios';
 
-//Lesson 12: We are fetching the product data but that is coming from the port 5000. We added  "proxy": "http://127.0.0.1:5000" to the package.json in the frontend so we are able to communicate with the backend
+
 
 
 const Homescreen = () => {
+ 
+  const dispatch = useDispatch();
+ 
+  const productList = useSelector(state => {
+      return state.productList})
+  const { loading, error, products } = productList
 
-    const [products, setProducts] = useState([]);
+  useEffect(() => {
+    dispatch(listProducts());
+  }, [dispatch]);
 
-    useEffect(() => {
-        const fetchProducts = async () => {
-            const {data} = await axios.get('/api/products')
-
-            setProducts(data)
-        }
-        fetchProducts()
-    }, [])
-
+  //const products = []
+  
     return (
         <>
-            <h1>Latest products</h1>            
-            <Row>
-                {products.map(product => (
-                    <Col key={product._id} sm={12} md={6} lg={4} xl={3}>
-                        <Product 
-                        product={product}
-                       />
-                    </Col>
-                ))}
-            </Row>
-            
-        </>
-    )
-}
+          <h1>Latest Products</h1>
+          {loading ? (
+        <h2>Loading...</h2>
+      ) : error ? (
+        <h3>{error}</h3>
+      ) : (
+        <Row>
+          {products && products.map((product) => (
+            <Col key={product._id} sm={12} md={6} lg={4} xl={3}>
+              <Product product={product} />
+            </Col>
+          ))}
+        </Row>
+      )}
+          </>
+      );
+  
+};
 
-export default Homescreen
+export default Homescreen;

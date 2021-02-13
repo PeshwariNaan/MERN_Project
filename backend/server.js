@@ -1,9 +1,9 @@
 import express from 'express'; 
-//import products from './data/products.js'; //don't forget the .js
 import connectDB from './config/db.js';
 import dotenv from 'dotenv';
 import colors from 'colors';
 import productRoutes from './routes/productRoutes.js';
+import userRoutes from './routes/userRoutes.js';
 import {notFound, errorHandler} from './middleware/errorMiddleware.js'
 
 
@@ -13,6 +13,9 @@ connectDB();
 
 const app = express();
 
+//Lesson 37 - Adding this to be able to accept JSON data in the body from Postman - This is for user authentication
+app.use(express.json());
+
 
 //Lesson 11 - We added express and the backend folder and we added the start script in the root package.json file so we can use $npm start from the cmd terminal
 
@@ -21,6 +24,7 @@ app.get('/', (req, res) => {
 });
 
 app.use('/api/products', productRoutes)
+app.use('/api/users', userRoutes)
 
 //Lesson 22 - set up the routes  and moved the calls to product-router.js
 // app.get('/api/products', (req, res) => {

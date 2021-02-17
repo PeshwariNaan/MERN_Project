@@ -42,16 +42,7 @@ const Homescreen = () => {
             </Row>
           )}
         </>
-      );
-     
-  
-      
-
-  
-  
-        
-     
-  
-};
+      );   
+  };
 
 export default Homescreen;

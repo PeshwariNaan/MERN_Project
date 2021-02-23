@@ -73,3 +73,69 @@ export const register = (name, email, password) => async (dispatch) => {
         })
     }
 };
+
+//Remember that we can get the token by including getState
+
+export const getUserDetails = (id) => async (dispatch, getState) => {
+    try {
+        dispatch({
+            type: userActionTypes.USER_DETAILS_REQUEST
+        });
+        //destructuring to get the userInfo from getState - we keep the token there
+        const {userLogin: {userInfo}} = getState();
+
+        const config = {
+            headers: {
+                'Content-Type': 'application/json',
+                Authorization: `Bearer ${userInfo.token}`
+            },
+        }
+
+        const {data} = await axios.get(`api/users/${id}`, config)
+
+        dispatch({
+            type: userActionTypes.USER_DETAILS_SUCCESS,
+            payload: data
+        });
+
+    } catch (error) {
+        dispatch({
+            type: userActionTypes.USER_DETAILS_FAIL,
+            payload: error.response && error.response.data.message
+              ? error.response.data.message
+              : error.message,
+        })
+    }
+};
+
+export const updateUserProfile = (user) => async (dispatch, getState) => {
+    try {
+        dispatch({
+            type: userActionTypes.USER_UPDATE_PROFILE_REQUEST
+        });
+        //destructuring to get the userInfo from getState - we keep the token there
+        const {userLogin: {userInfo}} = getState();
+
+        const config = {
+            headers: {
+                'Content-Type': 'application/json',
+                Authorization: `Bearer ${userInfo.token}`
+            },
+        }
+
+        const {data} = await axios.put(`api/users/profile`, user, config)
+
+        dispatch({
+            type: userActionTypes.USER_UPDATE_PROFILE_SUCCESS,
+            payload: data
+        });
+
+    } catch (error) {
+        dispatch({
+            type: userActionTypes.USER_UPDATE_PROFILE_FAIL,
+            payload: error.response && error.response.data.message
+              ? error.response.data.message
+              : error.message,
+        })
+    }
+};

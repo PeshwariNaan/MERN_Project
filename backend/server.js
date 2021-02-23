@@ -4,6 +4,7 @@ import dotenv from 'dotenv';
 import colors from 'colors';
 import productRoutes from './routes/productRoutes.js';
 import userRoutes from './routes/userRoutes.js';
+import orderRoutes from './routes/orderRoutes.js'
 import {notFound, errorHandler} from './middleware/errorMiddleware.js'
 
 
@@ -25,6 +26,7 @@ app.get('/', (req, res) => {
 
 app.use('/api/products', productRoutes)
 app.use('/api/users', userRoutes)
+app.use('/api/orders', orderRoutes)
 
 //Lesson 22 - set up the routes  and moved the calls to product-router.js
 // app.get('/api/products', (req, res) => {

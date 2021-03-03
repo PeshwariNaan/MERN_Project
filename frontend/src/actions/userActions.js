@@ -1,4 +1,5 @@
 import * as userActionTypes from '../constants/userConstants';
+import {ORDER_LIST_MY_RESET} from '../constants/orderConstants';
 import axios from 'axios';
 
 export const Login = (email, password) => async (dispatch) => {
@@ -34,7 +35,12 @@ export const Login = (email, password) => async (dispatch) => {
 
 export const logout = () => (dispatch) => {
     localStorage.removeItem('userInfo');
+    localStorage.removeItem('cartItems')
     dispatch({type: userActionTypes.USER_LOGOUT})
+    dispatch({type: userActionTypes.USER_DETAILS_RESET})
+    dispatch({type: ORDER_LIST_MY_RESET})
+    dispatch({type: userActionTypes.USER_LIST_RESET})
+
 
 }
 
@@ -133,6 +139,67 @@ export const updateUserProfile = (user) => async (dispatch, getState) => {
     } catch (error) {
         dispatch({
             type: userActionTypes.USER_UPDATE_PROFILE_FAIL,
+            payload: error.response && error.response.data.message
+              ? error.response.data.message
+              : error.message,
+        })
+    }
+};
+
+export const listUsers = () => async (dispatch, getState) => {
+    try {
+        dispatch({
+            type: userActionTypes.USER_LIST_REQUEST
+        });
+        //destructuring to get the userInfo from getState - we keep the token there
+        const {userLogin: {userInfo}} = getState();
+
+        const config = {
+            headers: {                
+                Authorization: `Bearer ${userInfo.token}`
+            },
+        }
+
+        const {data} = await axios.get(`/api/users`, config)
+
+        dispatch({
+            type: userActionTypes.USER_LIST_SUCCESS,
+            payload: data
+        });
+
+    } catch (error) {
+        dispatch({
+            type: userActionTypes.USER_LIST_FAIL,
+            payload: error.response && error.response.data.message
+              ? error.response.data.message
+              : error.message,
+        })
+    }
+};
+
+export const deleteUser = (id) => async (dispatch, getState) => {
+    try {
+        dispatch({
+            type: userActionTypes.USER_DELETE_REQUEST
+        });
+        //destructuring to get the userInfo from getState - we keep the token there
+        const {userLogin: {userInfo}} = getState();
+
+        const config = {
+            headers: {                
+                Authorization: `Bearer ${userInfo.token}`
+            },
+        }
+
+        await axios.delete(`/api/users/${id}`, config)
+
+        dispatch({
+            type: userActionTypes.USER_DELETE_SUCCESS              
+        });
+
+    } catch (error) {
+        dispatch({
+            type: userActionTypes.USER_DELETE_FAIL,
             payload: error.response && error.response.data.message
               ? error.response.data.message
               : error.message,

@@ -14,7 +14,7 @@ export const Login = (email, password) => async (dispatch) => {
             },
         }
 
-        const {data} = await axios.post('api/users/login', {email, password}, config)
+        const {data} = await axios.post('/api/users/login', {email, password}, config)
 
         dispatch({
             type: userActionTypes.USER_LOGIN_SUCCESS,
@@ -35,7 +35,9 @@ export const Login = (email, password) => async (dispatch) => {
 
 export const logout = () => (dispatch) => {
     localStorage.removeItem('userInfo');
-    localStorage.removeItem('cartItems')
+    localStorage.removeItem('cartItems');
+    localStorage.removeItem('shippingAddress');
+    localStorage.removeItem('paymentMethod');
     dispatch({type: userActionTypes.USER_LOGOUT})
     dispatch({type: userActionTypes.USER_DETAILS_RESET})
     dispatch({type: ORDER_LIST_MY_RESET})
@@ -83,35 +85,37 @@ export const register = (name, email, password) => async (dispatch) => {
 //Remember that we can get the token by including getState
 
 export const getUserDetails = (id) => async (dispatch, getState) => {
-    try {
-        dispatch({
-            type: userActionTypes.USER_DETAILS_REQUEST
-        });
-        //destructuring to get the userInfo from getState - we keep the token there
-        const {userLogin: {userInfo}} = getState();
+  try {
+    dispatch({
+      type: userActionTypes.USER_DETAILS_REQUEST,
+    })
+    //destructuring to get the userInfo from getState - we keep the token there
+    const {
+      userLogin: { userInfo },
+    } = getState();
 
-        const config = {
-            headers: {
-                'Content-Type': 'application/json',
-                Authorization: `Bearer ${userInfo.token}`
-            },
-        }
+    const config = {
+        headers: {
+          Authorization: `Bearer ${userInfo.token}`,
+        },
+      }
 
-        const {data} = await axios.get(`api/users/${id}`, config)
+      const { data } = await axios.get(`/api/users/${id}`, config)
 
-        dispatch({
-            type: userActionTypes.USER_DETAILS_SUCCESS,
-            payload: data
-        });
+    dispatch({
+      type: userActionTypes.USER_DETAILS_SUCCESS,
+      payload: data,
+    })
 
-    } catch (error) {
-        dispatch({
-            type: userActionTypes.USER_DETAILS_FAIL,
-            payload: error.response && error.response.data.message
-              ? error.response.data.message
-              : error.message,
-        })
-    }
+  } catch (error) {
+    dispatch({
+      type: userActionTypes.USER_DETAILS_FAIL,
+      payload:
+        error.response && error.response.data.message
+          ? error.response.data.message
+          : error.message,
+    })
+  }
 };
 
 export const updateUserProfile = (user) => async (dispatch, getState) => {
@@ -129,7 +133,7 @@ export const updateUserProfile = (user) => async (dispatch, getState) => {
             },
         }
 
-        const {data} = await axios.put(`api/users/profile`, user, config)
+        const {data} = await axios.put(`/api/users/profile`, user, config)
 
         dispatch({
             type: userActionTypes.USER_UPDATE_PROFILE_SUCCESS,
@@ -200,6 +204,38 @@ export const deleteUser = (id) => async (dispatch, getState) => {
     } catch (error) {
         dispatch({
             type: userActionTypes.USER_DELETE_FAIL,
+            payload: error.response && error.response.data.message
+              ? error.response.data.message
+              : error.message,
+        })
+    }
+};
+
+export const updateUser = (user) => async (dispatch, getState) => {
+    try {
+        dispatch({
+            type: userActionTypes.USER_UPDATE_REQUEST
+        });
+        //destructuring to get the userInfo from getState - we keep the token there
+        const {userLogin: {userInfo}} = getState();
+
+        const config = {
+            headers: {  
+                'Content-Type'  : 'application/json',            
+                Authorization: `Bearer ${userInfo.token}`
+            },
+        }
+
+        const { data } = await axios.put(`/api/users/${user._id}`, user, config)
+
+        dispatch({
+            type: userActionTypes.USER_UPDATE_SUCCESS,
+            payload: data          
+        });
+
+    } catch (error) {
+        dispatch({
+            type: userActionTypes.USER_UPDATE_FAIL,
             payload: error.response && error.response.data.message
               ? error.response.data.message
               : error.message,

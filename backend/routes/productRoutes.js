@@ -9,7 +9,9 @@ router
   .route("/")
   .get(productController.getProducts)
   .post(protect, admin, productController.createProduct);
-
+  router
+  .route("/:id/reviews")
+  .post(protect, productController.createProductReview)
 router
   .route("/:id")
   .get(productController.getProductById)

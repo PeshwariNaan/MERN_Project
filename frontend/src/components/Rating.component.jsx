@@ -72,7 +72,7 @@ Rating.defaultProps = { color: '#f8e825'};
 //We can set the type for the props - ensures that we are sending the right data type
 Rating.propTypes = {
     value: PropTypes.number,
-    text: PropTypes.string.isRequired,
+    text: PropTypes.string,
     color: PropTypes.string,
 };
 

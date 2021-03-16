@@ -1,5 +1,6 @@
 import * as userActionTypes from '../constants/userConstants';
 import {ORDER_LIST_MY_RESET} from '../constants/orderConstants';
+import {PRODUCT_CREATE_REVIEW_RESET} from '../constants/productConstants';
 import axios from 'axios';
 
 export const Login = (email, password) => async (dispatch) => {
@@ -42,6 +43,8 @@ export const logout = () => (dispatch) => {
     dispatch({type: userActionTypes.USER_DETAILS_RESET})
     dispatch({type: ORDER_LIST_MY_RESET})
     dispatch({type: userActionTypes.USER_LIST_RESET})
+    dispatch({ type: PRODUCT_CREATE_REVIEW_RESET })
+    document.location.href = '/'
 
 
 }

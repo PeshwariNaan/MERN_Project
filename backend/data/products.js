@@ -1,4 +1,6 @@
 const products = [
+//Remeber if you want to seed the data - use command npm
+
   {
     name: 'Airpods Wireless Bluetooth Headphones',
     image: '/images/airpods.jpg',

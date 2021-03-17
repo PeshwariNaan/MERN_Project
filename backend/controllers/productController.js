@@ -7,9 +7,20 @@ import asyncHandler from 'express-async-handler';
 //@route GET /api/products
 //@access Public
 export const getProducts = asyncHandler(async(req, res) => {
-    const products = await Product.find({});
+    //Lesson 86 - adding pagination functionallity
+    const pageSize = 10;
+    const page = Number(req.query.pageNumber) || 1;
+    //Lesson 85 - added the search functionallity with the keyword code below - the $options: 'i' has to do with the case - then used the spread operator in the find function ...keyword
+    const keyword = req.query.keyword ? {
+        name: {
+            $regex: req.query.keyword,
+            $options: 'i'
+        }
+    } : {};
+    const count = await Product.countDocuments({...keyword});
+    const products = await Product.find({...keyword}).limit(pageSize).skip(pageSize * (page - 1));
    
-    res.json(products)
+    res.json({products, page, pages: Math.ceil(count / pageSize)})
 });
 
 
@@ -30,7 +41,7 @@ export const getProductById = asyncHandler(async(req, res) => {
 
 //@desc Delete a product
 //@route DELETE /api/products/:id
-//@access Privet/Admin
+//@access Private/Admin
 export const deleteProduct = asyncHandler(async(req, res) => {
     const product = await Product.findById(req.params.id)
 
@@ -47,7 +58,7 @@ export const deleteProduct = asyncHandler(async(req, res) => {
 
 //@desc Create a product
 //@route POST /api/products
-//@access Privet/Admin
+//@access Private/Admin
 export const createProduct = asyncHandler(async(req, res) => {
     const product = new Product({
         name: 'Sample name',
@@ -69,7 +80,7 @@ export const createProduct = asyncHandler(async(req, res) => {
 
 //@desc Update a product
 //@route PUT /api/products/:id
-//@access Privet/Admin
+//@access Private/Admin
 export const updateProduct = asyncHandler(async(req, res) => {
 
     const {
@@ -103,7 +114,7 @@ export const updateProduct = asyncHandler(async(req, res) => {
 
 //@desc Create New review
 //@route POST /api/products/:id/reviews
-//@access Privet
+//@access Private
 export const createProductReview = asyncHandler(async(req, res) => {
 
     const {
@@ -113,7 +124,7 @@ export const createProductReview = asyncHandler(async(req, res) => {
     const product = await Product.findById(req.params.id)
 
     if(product) {
-      const alreadyReviewed = product.reviews.find((r) => r.user.toString() === r.user._id.toString())
+      const alreadyReviewed = product.reviews.find((r) => r.user.toString() === req.user._id.toString())
 
       if(alreadyReviewed) {
           res.status(400)
@@ -137,4 +148,16 @@ export const createProductReview = asyncHandler(async(req, res) => {
         res.status(404)
         throw new Error("Product not found!")
     }    
+});
+
+//@desc Display top rated products
+//@route GET /api/products/top
+//@access Public
+export const getTopProducts = asyncHandler(async(req, res) => {
+    //Lesson 87
+    //When we sort by ascending order we use the -1 in the call
+    const products = await Product.find({}).sort({ rating: -1 }).limit(3);
+
+    res.json(products)
+  
 });

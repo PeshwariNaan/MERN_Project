@@ -12,6 +12,7 @@ router
   router
   .route("/:id/reviews")
   .post(protect, productController.createProductReview)
+router.get('/top', productController.getTopProducts)  
 router
   .route("/:id")
   .get(productController.getProductById)

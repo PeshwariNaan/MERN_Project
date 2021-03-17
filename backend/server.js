@@ -27,9 +27,7 @@ app.use(express.json());
 
 //Lesson 11 - We added express and the backend folder and we added the start script in the root package.json file so we can use $npm start from the cmd terminal
 
-app.get('/', (req, res) => {
-    res.send('API is running...')
-});
+
 
 app.use('/api/products', productRoutes)
 app.use('/api/users', userRoutes)
@@ -38,11 +36,26 @@ app.use('/api/upload', uploadRoutes)
 
 app.get('/api/config/paypal', (req, res) => res.send(process.env.PAYPAL_CLIENT_ID))
 
-const __dirname = path.resolve()
+
+
+
+const __dirname = path.resolve() //unable to use __dirname here so need to create this constant
 app.use('/uploads', express.static(path.join(__dirname, '/uploads'))) //We are making the folder static
 
-app.use(notFound)
-app.use(errorHandler)
+//The following if statement is to use the route to the static build folder
+if(process.env.NODE_ENV = 'production') {
+    app.use(express.static(path.join(__dirname, '/frontend/build')))
+    app.get('*', (req, res) => 
+    res.sendFile(path.resolve(__dirname, 'frontend', 'build', 'index.html')))
+}else {
+    app.get('/', (req, res) => {
+        res.send('API is running...')
+    });
+}
+
+
+
+
 
 //Lesson 22 - set up the routes  and moved the calls to product-router.js
 // app.get('/api/products', (req, res) => {
@@ -55,10 +68,9 @@ app.use(errorHandler)
 // });
 
 //Lesson 24: Creating middleware that will handle the errors in the get requests - moved the code to the middleware errorMiddleware.js file
+
 app.use(notFound)
-
 app.use(errorHandler)
-
 
 const PORT = process.env.PORT || 5000
 

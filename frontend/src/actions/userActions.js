@@ -45,8 +45,6 @@ export const logout = () => (dispatch) => {
     dispatch({type: userActionTypes.USER_LIST_RESET})
     dispatch({ type: PRODUCT_CREATE_REVIEW_RESET })
     document.location.href = '/'
-
-
 }
 
 export const register = (name, email, password) => async (dispatch) => {

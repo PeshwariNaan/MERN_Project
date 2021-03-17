@@ -155,7 +155,6 @@ export const createProductReview = (productId, review) => async (dispatch, getSt
         dispatch({
             type: actionTypes.PRODUCT_CREATE_REVIEW_REQUEST
         });
-        //destructuring to get the userInfo from getState - we keep the token there
         const {userLogin: {userInfo}} = getState();
 
         const config = {

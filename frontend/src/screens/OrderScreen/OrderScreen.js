@@ -29,32 +29,62 @@ const OrderScreen = ({ match, history }) => {
   const { loading: loadingDeliver, success: successDeliver } = orderDeliver;
 
   useEffect(() => {
-    if(!userInfo)  {
+    if (!userInfo) {
       history.push('/login')
     }
-    //All code here is for using the paypal api and accessing the client id - previous code setup is located in the backend - server.js.
+
     const addPayPalScript = async () => {
-      const { data: clientId } = await axios.get("/api/config/paypal");
-      const script = document.createElement("script");
-      script.type = "text/javascript";
-      script.src = `https://www.paypal.com/sdk/js?client-id=${clientId}`;
-      script.async = true;
-      script.onlaod = () => {
-        setSdkReady(true);
-      };
-      document.body.appendChild(script);
-    };
+      const { data: clientId } = await axios.get('/api/config/paypal')
+      const script = document.createElement('script')
+      script.type = 'text/javascript'
+      script.src = `https://www.paypal.com/sdk/js?client-id=${clientId}`
+      script.async = true
+      script.onload = () => {
+        setSdkReady(true)
+      }
+      document.body.appendChild(script)
+    }
 
     if (!order || successPay || successDeliver || order._id !== orderId) {
-      dispatch({ type: ORDER_PAY_RESET });
-      dispatch({ type: ORDER_DELIVER_RESET });
-      dispatch(getOrderDetails(orderId));
-    } else if (!window.paypal) {
-      addPayPalScript();
-    } else {
-      setSdkReady(true);
+      dispatch({ type: ORDER_PAY_RESET })
+      dispatch({ type: ORDER_DELIVER_RESET })
+      dispatch(getOrderDetails(orderId))
+    } else if (!order.isPaid) {
+      if (!window.paypal) {
+        addPayPalScript()
+      } else {
+        setSdkReady(true)
+      }
     }
-  }, [dispatch, order, orderId, successPay, successDeliver, history, userInfo]);
+  }, [dispatch, orderId, successPay, successDeliver, order, history, userInfo])
+
+  // useEffect(() => {
+  //   if(!userInfo)  {
+  //     history.push('/login')
+  //   }
+  //   //All code here is for using the paypal api and accessing the client id - previous code setup is located in the backend - server.js.
+  //   const addPayPalScript = async () => {
+  //     const { data: clientId } = await axios.get("/api/config/paypal");
+  //     const script = document.createElement("script");
+  //     script.type = "text/javascript";
+  //     script.src = `https://www.paypal.com/sdk/js?client-id=${clientId}`;
+  //     script.async = true;
+  //     script.onlaod = () => {
+  //       setSdkReady(true);
+  //     };
+  //     document.body.appendChild(script);
+  //   };
+
+  //   if (!order || successPay || successDeliver || order._id !== orderId) {
+  //     dispatch({ type: ORDER_PAY_RESET });
+  //     dispatch({ type: ORDER_DELIVER_RESET });
+  //     dispatch(getOrderDetails(orderId));
+  //   } else if (!window.paypal) {
+  //     addPayPalScript();
+  //   } else {
+  //     setSdkReady(true);
+  //   }
+  // }, [dispatch, order, orderId, successPay, successDeliver, history, userInfo]);
 
   const successPaymentHandler = (paymentResult) => {
     console.log(paymentResult);

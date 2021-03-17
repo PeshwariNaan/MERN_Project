@@ -1,4 +1,5 @@
 import * as orderActionTypes from '../constants/orderConstants';
+import {CART_CLEAR_ITEMS} from '../constants/cartConstants';
 import axios from 'axios';
 
 
@@ -23,6 +24,11 @@ export const createOrder = (order) => async (dispatch, getState) => {
             type: orderActionTypes.ORDER_CREATE_SUCCESS,
             payload: data
         });
+        dispatch({
+            type: CART_CLEAR_ITEMS,
+            payload:data
+        })
+        localStorage.removeItem('cartItems')
 
     } catch (error) {
         dispatch({
@@ -103,7 +109,7 @@ export const deliverOrder = (order) => async (dispatch, getState) => {
         dispatch({
             type: orderActionTypes.ORDER_DELIVER_REQUEST
         });
-        //destructuring to get the userInfo from getState - we keep the token there
+        
         const {userLogin: {userInfo}} = getState();
 
         const config = {
@@ -134,7 +140,7 @@ export const listMyOrders = () => async (dispatch, getState) => {
         dispatch({
             type: orderActionTypes.ORDER_LIST_MY_REQUEST
         });
-        //destructuring to get the userInfo from getState - we keep the token there
+        
         const {userLogin: {userInfo}} = getState();
 
         const config = {

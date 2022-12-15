@@ -51,7 +51,7 @@ Users should be able to:
 ### Links
 
 - Full Project Code: [Github-rep](https://github.com/PeshwariNaan/MERN_Project.git)
-- Live Site URL: [Live-Link](https://frolicking-pasca-97775f.netlify.app)
+- Live Site URL: [Live-Link](https://jdsuperproshop.herokuapp.com/)
 
 ## My process
 
@@ -77,7 +77,7 @@ This was the first full stack application that I have built. I learned how to bu
 
 ### Continued development
 
-I have really enjoyed learning how to build full stack apps and this project has led me to building other full stack apps using what I learned here. It has really expanded my understading of how different technologies interlink and the current state of the internet today. From here I would like to continue building full stack apps and apply new things that I am currently learning such as Typescript and next.js. 
+I have really enjoyed learning how to build full stack apps and this project has led me to building other full stack apps using what I learned here. It has really expanded my understading of how different technologies interlink and the current state of the internet today. From here I would like to continue building full stack apps and apply new things that I am currently learning such as Typescript and next.js. I would also like to better understand app security and how to use server-side code to double check things like prices when an order is submitted on an eCommerce site. 
 
 
 ### Useful resources
@@ -93,3 +93,5 @@ I have really enjoyed learning how to build full stack apps and this project has
 
 
 ## Acknowledgments
+
+My thanks to Brad Traversy. His straight forward manner of teaching has helped me grow in on my web development journey.
